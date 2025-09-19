@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Birthstone&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+  <title>Kartu Digital</title>
+  <style>
+    * {
+      font-family: "Roboto", sans-serif !important;
+    }
+
+    :root {
+      --card-width: 90vmin;
+      --card-max-width: 560px;
+      --card-ratio: 7/4;
+      --card-border-radius: 16px;
+      --card-bg: linear-gradient(135deg, #9deaff, #e2fff3); /* gradient card */
+      --primary-color: #98f7c3;
+      --primary-color-hover: #e2fff3;
+      --text-color: #333;
+      --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: url('image.png') no-repeat center center fixed;
+      background-size: cover;
+      font-family: "Roboto", sans-serif;
+      padding: 20px;
+      box-sizing: border-box;
+      color: var(--text-color);
+      overflow: hidden;
+    }
+
+    .card-container {
+      position: relative;
+      width: var(--card-width);
+      max-width: var(--card-max-width);
+      aspect-ratio: var(--card-ratio);
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--card-border-radius);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: var(--card-bg);
+    }
+
+    .card-text {
+      gap: 35px;
+      flex-direction: column;
+      padding-top: 200px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 200px;
+      display: flex;
+      font-size: small;
+      position: relative;
+      z-index: 10;
+      text-align: justify;
+      line-height: 1.6;
+      white-space: pre-line;
+      font-family: "Roboto", sans-serif;
+      max-height: 300px; 
+      overflow-y: auto;  
+      scrollbar-width: thin; 
+    }
+
+    .card-text::-webkit-scrollbar { width: 6px; }
+    .card-text::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+    }
+
+    /* Container utama chat */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+/* Setiap baris chat */
+.chat-row {
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+
+.chat-row.chat-me {
+  justify-content: flex-end;
+  justify-content: right;  
+}
+
+.chat-row.chat-her {
+  justify-content: flex-start;
+}
+
+/* Bubble dasar */
+.chat-bubble {
+  padding: 8px 12px;
+  border-radius: 16px;
+  word-wrap: break-word;
+  text-align: justify;
+  font-size: 0.95rem;
+}
+
+/* Nama pengirim */
+.chat-name {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 4px;
+}
+
+.chat-me .chat-name {
+  color: green;
+}
+
+.chat-her .chat-name{
+  color: maroon;
+}
+
+/* Buble "me" (kanan) */
+.chat-me {
+  align-self: flex-end;          /* Geser ke kanan */
+  background: #d1f7d6;
+  border-radius: 16px 16px 0 16px;
+  text-align: left;              /* isi tetap rata kiri biar rapi */
+}
+
+.chat-me .chat-name {
+  text-align: right;  
+  float: right;     
+  padding-right: 3%;
+  padding-top: 2%;            /* Nama ke kanan */
+}
+
+/* Buble "her" (kiri) */
+.chat-her {
+  align-self: flex-start;        /* Geser ke kiri */
+  background: #f3abbb;
+  border-radius: 16px 16px 16px 0;
+  text-align: left;
+}
+
+.chat-her .chat-name {
+  text-align: left;
+  float: left;     
+  padding-left: 3%;
+  padding-top: 2%;              /* Nama ke kiri */
+}
+
+.spotify-box {
+  border-radius: 0;  /* jadi kotak */
+  overflow: hidden;  /* sembunyiin sudut rounded bawaan */
+  width: 100%;
+  height: 100px;
+}
+
+
+
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+
+    button:hover {
+      background: var(--primary-color-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .note-card {
+      min-height: 70vh; /* 70% tinggi layar */
+      max-height: 90vh; /* biar nggak kepanjangan */
+      overflow-y: auto;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+
+    @media (max-width: 600px) {
+      .note-card {
+        min-height: 80vh;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="card">
+      <div class="card-text" id="cardText"></div>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <button onclick="prevCard()" aria-label="Sebelumnya">← Prev</button>
+    <button onclick="nextCard()" aria-label="Berikutnya">Next →</button>
+  </div>
+  
+  <script>
+    const contents = [
+  {
+    type: "note",
+    content: `#Note115 01/09/25
+#LD
+
+Sela,
+ada hari-hari yang memang terasa berat, seolah semua jalan menutup diri. Tapi percayalah, selalu ada celah kecil tempat cahaya bisa masuk. Bahkan bunga pun butuh tanah gelap untuk tumbuh, bukan hanya sinar matahari.
+
+Kalau suatu saat kamu merasa sendiri, ingatlah ada orang-orang yang diam-diam selalu percaya sama langkahmu. Kamu nggak pernah benar-benar sendirian. 🌱`
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/5l6GqSxplqnZbLg0LTPQeG?si=6ef74e02c19c418e"
+  },
+  {
+    type: "chat",
+   content: [
+  { sender: "me", text: "#Important\n\nHai Sela 🌸, ini pesan dari aku di masa depan. Makasih ya udah nemenin selama ini. Lagi makan apa? wkwk. Udah makan belom? Makan dulu sambil liat-liat history kita di sini. Web ini bakal terus kuupdate seiring percakapan kita berjalan, dan nanti bakal kuperbagus lagi setelah selesai UAS semester 3. Mungkin akhir-akhir ini aku bikin kamu ragu, maafin ya. Percaya aja, seiring waktu aku bakal jadi orang yang lebih sabar dan ya nantiin aja kejutan kejutan lainnya. Jadi… believe aja." },
+  { sender: "me", text: "#Important\n\nHalo lagi, udah 6 bulan kenal ya? Aquarium, dinner, skating semuanya seru banget. Waktu bareng kamu selalu bikin aku bahagia. Makasih ya. Mungkin sekarang kamu masih ragu, tapi buatku kenal kamu itu hal paling asik. Dulu aku sering nggak bisa terus terang, sebenernya cuma takut kehilangan aja. Hahaha, ciaoo meng ku Sela." },
+  { sender: "me", text: "#Important\n\nHei bocilku, tau nggak kenapa pertama kali ketemu rasanya kayak udah kenal? Karena kamu udah mimpiin aku duluan wkwk. Makasih ya udah mau kenal aku selama 7 bulan. Meskipun ini text dalam mimpiku, Aku nulis pesan buat diriku di masa lalu, persis di belakangmu wkwk. Lagi ngapain kita sekarang? Kalau awal ketemu Agustus, 7 bulan setelahnya yaitu februari, dan ya ini pas aku ultah, katanya kamu mau makan kue coklat, tapi malah kuajak ke cafe kucing. Liat deh kamu main sama kucing, gemes kali. Udah ah, aku mau join juga. See you in future ✨." },
+  { sender: "me", text: "#Important\n\nHari ini kita sempet bertengkar ya? Sela lagi ngambek nih, aduh gimana coba. Padahal bulan depan ultah kamu. Nanti aku kabarin lagi kalau suasana udah mendingan. Lucu banget sih kalau ngambek wkwk." },
+  { sender: "me", text: "#Important\n\nOke, si imut lagi ultah! Banyak banget maunya, ditemenin ke sana ke sini wkwk. Tapi aku enjoy kok. Tiap kali kamu senyum, aku otomatis ikut senyum. Nular banget. Bikin hari-hari jadi cerah. Oke deh, mau nemenin Sela dulu. Byeee." },
+  { sender: "me", text: "#Important\n\nHari ini mungkin jadi mimpi terakhir tentangmu? Pesan ini dari Vin di bulan September. Aku mimpiin hal seru di 2030 jadi tahun penuh kenangan indah sepedaan di Swiss, liat aurora di Finlandia barengmu, wkwk. Mulai sekarang aku nggak akan cuma mimpi lagi, tapi fokus buat nemenin kamu beneran. Thank you... Sel" }
+]
+
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/7a53HqqArd4b9NF4XAmlbI?si=0ee55722602c40a5"
+  },
+  {
+    type: "note",
+    content: `#Note116 02/09/25
+#IM
+
+Malam ini aku nggak banyak bicara, tapi cukup hanya dengan tahu kamu ada di sana. Rasanya tenang, seperti laut yang tidak perlu selalu berombak untuk tetap indah.
+
+Ada sesuatu dari hadirmu yang sederhana, tapi mampu membuat aku belajar bahwa kebahagiaan bukan soal besar kecilnya momen, melainkan soal dengan siapa kita membaginya.`
+  },
+  
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Wih thank you, difollow artiss" },
+      { sender: "her", text: "hanya org biasa kok 😌 btw thank you vin untuk support dan waktunya tadi di live! doa terbaik selalu buat kamuu✨ semangat ngampusnya yaa! semoga lancar selaluu" },
+      { sender: "me", text: "Siap semangat juga Sela menjalani kesehariannya"}
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/1GEBsLDvJGw7kviySRI6GX?si=2a2124ffcc7744df"
+  },
+  {
+    type: "note",
+    content: `#Note11 24/08/25
+#ND
+
+Sela,
+hidup memang sering kali seperti hujan deras: dingin, berat, kadang bikin basah kuyup. Tapi hujan juga lah yang membuat pelangi bisa muncul.
+
+Jangan ragu untuk beristirahat di tengah perjalanan. Karena kekuatan itu bukan hanya soal terus maju, tapi juga soal tahu kapan harus memberi ruang untuk diri sendiri.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Dear, Sela\n\nTerima kasih sudah selalu mendengarkan banyak keluhan ku Dan viewers lainnya, untuk pujian nya mungkin kamu sudah terbiasa dengarnya tapi sekali lagi meskipun Sela terlihat sangat menarik didalam Sela orang yang sangat care, Dan sangat amat soft spoken yang menunjukan value seorang Sela seperti malaikat?, selain itu Sela juga orang yang sangat amat dewasa secara pikiran meskipun kadang berperilaku imut yang menyebabkan kelebihan gula(tapi makasih lho Kadar gula jadi berkurang) jangan terlalu imut Dan cantik g sehat buat gw(candaan hehe Sela cantek kok, biar imbang imut juga), terkadang ku berpikir kalau suatu saat bisa bertemu mau itu jadi teman atau sekedar fans, aku cuman mau bilang Terima kasih sudah menjadi terang untuk banyak orang meskipun orang tersebut tidak kamu kenal, sehat selalu Sela jangan lupa makan yang teratur." },
+      { sender: "her", text: "tidak tahu mengapa seketika air mataku menetes setelah membaca pesanmu yang begitu panjang ini 🥲\n\nthank you yaa im so touched 🫠 pdhl baru beberapa hari kenal di live tapi kmu baik sekali.. my pleasure and senang kok kalau bisa bermanfaat dan membantu beberapa org yg butuh tempat curhat atau cerita.. calvin juga semoga sehat selalu yaa! i’m glad to know u.. makasih juga buat pujiannya 😌🐊 makan yg teratur and istirahat selalu yg cukup yaa! semangat terus buat perkuliahannya, sukses selalu buat calvin sugoi ✨" },
+      { sender: "me", text: "Iya kah?... Hehe jangan nangis nanti malu sama kucing\n\nBeberapa hari yes... Cuman aku akan baik kepada orang lain kalo mereka baik ke aku, terutama Sela 🙂‍↕🙂‍↕, keren keren kamu bisa dengerin banyak curhatan, beneran kalau mau curhat aku open minded curhat aja gpp, glad to know u too, tanpa kau sadari motivasi mu sangat berdampak 3 hari ini, Sela juga jangan baca manhwa terus lupa waktu ya wwww... Tidur yang cukup bentar lagi masuk kuliah lho." },
+      { sender: "her", text: "ah i see, ya emng sih kadang live yg fokusnya cmn chit chat kaya aku gini lumayan ngedrained bgt kalau ga dibatasin. tpi ga keren ah biasa aja.. kerenan juga dirimu 😌🫵🏻 and makasih lho buat tawarannya, boleh nyok kapan2 kalau ada kesempatan p curhad. wii iyakah? berdampak gimanaa? syukurdeh kalau bisa membantu 🥲 iyaa siap gak selalu baca manhwa jg kok, baca jg kalau mood saja 😌 btw makasih vin trakteer magnum nya 🥲 baru liat ada notif dri trakteer. pdhl tdi bercanda doang wehh🗿\n\nthank you and god bless you vinn ✨"}
+    ]
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/0WbMK4wrZ1wFSty9F7FCgu?si=2d3b982605a546d9"
+  },
+  {
+    type: "note",
+    content: `#Note18 25/08/25
+#W!
+
+Ada hal aneh tentang senyummu. Ia bukan sekadar ekspresi, tapi seperti doa yang menenangkan siapa pun yang melihatnya.
+
+Aku kadang bingung bagaimana mungkin seseorang bisa membawa cahaya hanya dengan hadir. Tapi nyatanya kamu melakukannya setiap hari. Dan mungkin, itu alasan mengapa aku selalu merasa lebih ringan saat mengingatmu.`
+  },
+  
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Sela menurutku manusia terkuat dibumi, kayanya kalo bumi di smackdown dia bisa dah... Orangnya emang kadang ini ges dingin tapi aslinya baik sangat Dan hangat, bahkan kehangatannya melebihi terik panas matahari di siang hari, Sela itu lucu, receh Dan hatinya sensitive, jadi emang udah tugas ku untuk menjaga tiap topik untuk hatinya yang suci Dan fragile itu. Sela itu orangnya suka Manis Manis padahal Dia Tau dirinya sudah Manis, Sela orangnya anti sombong, meskipun Tau dirinya cantik, Sela itu orangnya asik kok cuman orang orang aja yang kebiasaan sok asik Dan sok kenal, Sela itu suka deep talk meskipun kita sudah kadang deeptalknya dia tetep mau lho kontakan ma aku. Intinya Sela adalah manusia yang sekarang prioritas nya nomer 2 setelah diriku sendiri" },
+      { sender: "her", text: "ffah iya nomor 2 😌 but i see thank you vin buat review dirikunya 🙇🏻‍♀️" },
+      { sender: "me", text: "Ga percaya bener? Makanya klo kamu chat aku duluan ku bakal happy sih"},
+      { sender: "her", text: "ya emng selama ini aku prnh percaya sama siapa sih 😌 tak de.. tpi kalau ke dirimu ntah knp beberapa persen mulai muncul sih skrng"},
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/3HVWdVOQ0ZA45FuZGSfvns?si=02bbd08369fe482c"
+  },
+  {
+    type: "note",
+    content: `#Note121 04/09/25
+#PD
+
+Sela,
+semesta punya cara unik untuk membentuk kita. Kadang lewat tawa, kadang lewat luka. Tapi keduanya sama-sama berharga, karena dari situlah kita belajar arti tumbuh.
+
+Jangan pernah meremehkan langkah kecilmu. Bahkan riak kecil di air bisa jadi awal gelombang besar. Aku percaya, setiap yang kamu lakukan akan selalu meninggalkan bekas baik, meski kamu sendiri belum menyadarinya.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Ku hari ini merasa dirimu sedang tak ingin diganggu Dan merasa dirimu mungkin sedang lelah menjalani hidup makanya aku lebih memilih buat ngeliat liat ulang chat kita\n\nTapi ku tetap mau mengabari je sih supaya kau tak overthinking atau gmn gmn juga, anggap saja diriku Masih Selamat hari ini wkwk... And special untuk hari ini ku akan menemanimu sampai kamu ngantuk seharusnya kamu akan ngantuk lebih cepat kan?" },
+      { sender: "her", text: "kalau di perduliin sebegitunya jadi takut. so many people are saying that too, kalau aku dewasa lah, udah mateng lah, strong lah.. tpi endingnya malah pd pergi karna aku ga cukup baik buat menuhin ekspektasi mereka 🙃 but thanks vin.. i appreciated it 🙏🏻 ku rasa kmu juga pantas dapet attention siapapun. aku juga bkl seneng kalau bs bantu kmu buat selalu semangat menjalani hari. actually emng lgi butuh someone to talk jg meski capek tenaga dan mental. makasih udh selalu chat aku kaya gini 🙇🏻‍♀\n\nhuaa knp nangis ya" },
+      { sender: "me", text: "How I supposed to say, how I supposed to act? To make you believe klo ku g kemana mana, susah ku Tau kamu ga percaya, tapi boleh ga percaya sama Allah sekali ini aja? Ku juga udah janji ama Allah kalo ga kemana mana, aku dateng bukan untuk berekspetasi, tapi buat dukung kamu sekuat tenaga ku, so as always what do you want to share\n\nDisaat ku liat seen di jam 4 itu semacam pertanda akan diriku di sore hari, aku nyesel ga ngechat kamu pagi tadi karena ya jaket kelas ku ketinggalan jadi aku harus bolak balik asrama jadi sibuk, seharusnya ku chat kamu dulu, di sore feeling ku udh g enak sih, tumben seen di jam segini? Apakah dia butuh seseorang? Makanya ku chat dimalam tadi, kamu kalau mau cerita apapun cerita aja, kudengerin kok, mau kamu minta solusi atau apapun itu akan kuberikan semampuku\n\nJangan nangis yah nanti tambah cantik lho 🤍\n\nYou are always helping the others, and I want to be the one to help you right now" },
+      { sender: "her", text: "to be honest aku udh kapok buat oversharing ke orang. No one cares, bcs people are just curious. mau orang tau seberat apa hidup yg orang lain rasain ga mungkin paham jg. skrng aku lagi di puncak males interaksi sama siapapun di dunia per streamingan. banyak drama yg ngedrained aku akhir2 ini yg padahal itu semua ga harus aku fikirin tapi jdi ku fikirin karena perlakuan org yg bikin ga nyaman. toxic bgt sebenernya dunia streamingan ini. makanya skrng aku mulai cari kesibukan di rl. mau kmu ngeliat aku sepositif itu di live tpi orang tetep nyerang aku seenaknya. entah aku salah apa sampai diusik ketenangan aku yg niatnya cmn mau ngasih energy positif doang. di dunia ini even berbuat baik dgn ga ngerugiin org aja bisa kena dampak negatif orang. I don’t know lah capek aja lama2 semua org banyak yg fake dan negatif nya.\n\nsantai aja vin.. ngechat se nyaman dn semau kamu aja. emang biasanya yg kamu tahu aku kalau baca chat di jam2 berapa? but thank you udh mikirin sejauh itu 🙏🏻 oh jadi yg kmu bilang sedikit sial itu krna jaket kmu ketinggalan?\n\nudh sih itu aja.. secara spesifik nya masih ku liat2 juga krna ini semacam insting dan asumsi pribadi, belum 100% bener. meski ya beberapa persen udh keliatan dn jelas bgt kalau ada sesuatu lewat bukti yg ku terima. makanya setiap nginget itu energy ku jadi sedikit terkuras aja" },
+      { sender: "me", text: "Mhm keluarin semuanya gapapa ceritain semua kamu sebel kamu males sama orang ini kenapa orang kaya gitu ceritain semua, ga perlu mikir apa apa, ceritain aja semua\n\nSemua manusia butuh tangan itu makanya ku berusaha untuk menjadi tangan yang bisa nolongin kamu, aku dateng bukan untuk berekspetasi ku dateng untuk menemani karena nyatanya aku lebih percaya ada alasan kenapa aku dateng di kehidupan seseorang, aku Tau sakitnya ditinggal seseorang.\n\nDan ketika kamu merasa malas interaksi karena beberapa orang hiraukan aja, ku Tau emg berat sih apalagi energy negative nya malah buat kamu males, aku ga maksa kamu live, interaksi sama orang orang, alasan ku selalu support kamu live karena itu pekerjaan mu, ya kalau mau tinggal in pekerjaan mu karena mu sudah muak tinggalkan saja, aku malah mendukungmu kalau itu membuatmu bahagia. Ku juga Masih bisa chat kamu, telp kamu. Ya kenapa nga gtu. Kamu g salah apa apa tapi manusia manusia aja yang terkadang berpikir dia deserve better from u. Manusiawi untuk membohongi orang Dan mengecewakan orang, fake and negative is part of human beings, bahkan kamu sekarang lagi negative vibes kan? Yah itu manusiawi, mungkin banyak orang yang menyebarkan energy negative nya untuk merasa positive di kemudian hari, seperti yang kamu lakuin skrg kamu curhat semua sisi negative yang kamu pendam, Dan aku senang mendengarnya, karena aku paham kalau energy itu kamu simpen terus kamu bisa stress\n\nMendengarkan mu berbicara akan hatimu, membuatku bahagia aja sih, ku sudah terbiasa mendengarkan energy negative orang, Dan menurutku itu indah aja sih. Dibalik kelebihan mereka mereka juga bisa capek, keindahan itulah yang membuat mereka layaknya manusia" },
+      { sender: "her", text: "ya jarang ada orang yg pemikirannya kaya kamu gitu vin.. kmu keren sih bisa berfikir sedewasa itu, i mean juga knp sih harus di perjelas? kaya kalau kenal bukannya ya saling komunikasi dan hargain batasan masing-masing aja ya? ngapain harus di lebay in gitu sih pake izin pamit atau segala macem. kaya mau di notice atau berharap aku bkl nangis darah ngejar2 gitu?? kan engga. malah menurutku jg orang kaya gtu keliatan cmn mau manis2 nya doang. ga ada keseriusan dn ngehargain orang lain. makanya skrng pun aku mempersilahkan dan membiarkan aja orang2 mau ngapain selagi aku ga di bawa2 atau di usik. lagi aku jg paham di dunia ini juga ga ada yg abadi.. jadi ya udah terserah skrng org mau gimana deh.. not my business jg."},
+      { sender: "me", text: "Kamu wanita hebat\n\nGood job for always being a Strong person, I'm so sorry if I'm late to know and found you but I hope I can make you believe in me for the last time believing in others... Karena menurutku dirimu itu sangat lah penting buatku Dan ga akan pernah ku tinggal in juga, it's enough for me to love these feelings, Dan itu ga akan pernah berubah... Ku berniat merawat bukan membuang... Because you are the worthy one Sela kecil."},
+      { sender: "her", text: "iya kamu bener.. I’m not full of positive energy either ku juga ofc punya sisi negative nya dan bisa fake juga. but sumpah baru kali ini aku nemu orang yg bikin aku capek dan bikin ga nyaman bgt.. actually aku tumbuh dri lingkungan yg dimana orang2 nya selalu merasa dirinya paling benar, paling korban dsg. sementara diriku selalu disalahin terus meski udh coba berubah gimana juga. dn ya dri pelajaran dlu kebanyakkan alasan yg ku terima krna mereka punya rasa iri hati. dan itu terjadi lagi sama org2 yg ku temuin yg ku bilang bikin capek sekarang ini. makanya mungkin itu nge trigger aku sama trauma masa lalu. krna plss aku ga suka bgt sama energy nya yg merasa paling bener dan baik. karna aku bukan org yg suka pamer kebaikan sampai harus orang lain tahu. its not my style bgt jadi kaya cmn bisa diem dan kebawa energy negatif yg dimana isi pikiranku sama hati aku skrng jadi keikut kotor.\n\niya that’s true.. selama ini org yg ku temuin begitu sih. mungkin alasannya bisa jadi karena aku emng soal chat itu slow respon sama siapapun maybe.. even ke adekku atau temen2 ku. kalau bales pesan aja skrng mood2 an. but pls lah emng menurutmu itu harus dijadikan alasan kah? 😩 karna menurutku itu hal sepele sih.. aku aja selama ini kalau pesan ku ga dibales sama org ya biasa aja.. selagi isinya ga begitu penting ya ngapain harus di respon juga kan?  but ya meski bgitu skrng mulai aku jadiin evaluasi sih so thanks vin 🙏🏻 btw minum air hangat coba.. suaramu sampai habis gitu"},
+      { sender: "me", text: "Kalau kamu capek Dan lelah menanggapi orang itu cut off saja karena kalau sudah sampai kaya Gini, dirimu bakal sengsara sendiri... Ga perlu segan cut off aja, kalau semisal ada apa apa kabarin ku je tar ku yang maju dah... Karena trauma masa kecilmu menurutku harus dilindungi Dan ga di trigger ulang tapi harusnya disembuhkan... Dan janganlah dirimu berubah karena kalau ga se chemistry itu brarti salah orangnya bukan kamunya karena ga setiap orang cocok satu sama lain. Hati kamu tetep suci dimataku aku g peduli Kotor nya, karena dirimu adalah dirimu Dan dimataku tetep Sela yang kukenal. orang orang paling benar ya... Ya banyak pasti manusia seperti itu solusinya adalah abaikan saja emang, terlalu menguras tenaga untuk di layani... Mereka akan sadar kalau dirinya sudah jatuh.\n\nAlasan ku Masih bisa mendengarkan manusia karena banyak nya orang diluar sana yang butuh orang lain Dan menolong orang banyak banyak lah pokonya diriku yang sekarang ini. Kalo ga penting ga perlu di respon apalagi kalau buat kamu down juga mending langsung hapus chatnya. Itu saranku sih"},
+      { sender: "her", text: "iya kamu bener.. tapi ga semudah itu cut off mereka kalau tanpa punya bukti yg bisa dijadiin tameng buat ku semisal dituduh macam2.	kalau emang semudah itu mungkin sejak dulu aku bkl block dan ga mau begitu kenal ya kalau tahu jadi begini. jadi ya skrng mau ga mau cmn bisa nyeimbangin cara dia.. mencoba buat nunjukkin kalau aku ga begitu terpengaruh sama sikap nya yg juga sedang lagi ditutup2 in itu. aku tahu ngadepin org bgitu meski jalannya emng energy terkuras bgt. ku fikir padahal orgnya baik sih asli.. tpi ya lagi2 ekspektasi suka di patahkan lagi sama kenyataan. makin bikin aku jadi takut lagi sih buat kenal orang baru. emng nguras tenaga makanya skrng lagi coba ku alihkan ke hal lain. sakit hati bgt sih engga ngelakuin apa2 tpi tbtb disudutin gini\n\ni see.. salut sama kamu. biasanya bnyk org yg cmn mikirin hidup mereka sendiri aja.. emng manusia yang seperti itu yang dunia butuhin. iya vinn, skrng jg ga pernah ada interaksi di chat juga sih.. paling cmn selama di live aja ku tanggepin."},
+      { sender: "me", text: "Yauda mulai besok kuajak ngobrol terus ni ma aku aja itu orang hiraukan jeu besok kucari topik yang bisa menghiburmu. Tapi disudutin? Beneran digituin? Ga beres nih... Hadeh manusia manusia ini... Kalo ga membully orang rasanya hidupnya tak lengkap kah"}
+    ]
+  },
+   {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/0GMs3jq70wmCo12pavj4st?si=7a82a52240af43fc"
+  },
+  {
+    type: "note",
+    content: `#Note114 28/08/25
+#Mixed
+
+CinderSela,
+
+Hari ini adalah lembar baru,
+entah penuh hujan atau cahaya,
+tetaplah kau melangkah,
+sebab setiap tapakmu punya arti.
+
+Jika lelah datang mengetuk,
+ingatlah bahkan bintang pun butuh malam untuk bisa bersinar.
+
+Percayalah, kebaikan yang kau tanam takkan hilang meski kecil,
+ia akan tumbuh diam-diam seperti doa yang pulang ke langit.
+
+Jalani hari ini dengan tenang,
+karena semesta selalu punya cara menyimpan kejutan indah bagi hati yang terus kuat dan sabar.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Apa yang kau ekspetasi kan ketika kita hangout nanti? Don't say tidak berekspetasi" },
+      { sender: "her", text: "ekspektasi ke kamu kalau udh ketemu? 🤔 apa ya bingung😭 kmu dulu coba" },
+      { sender: "me", text: "Aku berekspetasi apakah Kita akan diem dieman atau bisa bicara Karena pasti aku jadi orang yang selalu terpaku buat memori denganmu jadi fokus ngeliatmu? Observant" },
+      { sender: "her", text: "iyakah? bukannya kmu bilang ga suka natap orang karna maluan gitu?" },
+      { sender: "me", text: "Selama ga ditatap balik Wahahahahhaha\n\n Liat jeu berapa lama bisa saling tatapan\n\nKlo bisa selama itu brarti yang kasih aku kekuatan yang atas, dirimu sudah direstui" },
+      { sender: "her", text: "hmm kalau ekspektasi ku ke kamu kaya mungkin ke banyaknya percakapan dan interaksi aja sih.. ngebayanginnya bkl bnyk pembahasan krna aku jg suka aja nanya org"}
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/0tgVpDi06FyKpA1z0VMD4v?si=c7b9b6adfbcf4d8d"
+  },
+  {
+    type: "note",
+    content: `#Note110 27/08/25
+#-
+
+Quality time mu yang selalu ku dambakan meskipun ku Tau kau harus bertarung dengan banyak nya cobaan Dalam kehidupan mu sekarang.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Even though you know about my feelings,\nI hope you have fun while with me,\nIn this cruel world,\nI want to share the lights with you,\nEven when your day became dark,\nI am always at your side watching you from everywhere, anywhere and anytime,\nYou might be questioning me 'why me?'\nCause you are the girl I choose to" },
+      { sender: "her", text: "so sweet sekali adik ini ❤️ makasih yah bukan kata2 nya 😌🤏🏻 i appreciated it.." }
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/3be9ACTxtcL6Zm4vJRUiPG?si=f2d1c8dcae754791"
+  },
+  {
+    type: "note",
+    content: `#Note18 23/02/24
+#-
+
+Matahari adalah bayangan yang dipaksa terlihat terang.
+
+Bulan hanya diam, tapi matahari selalu dituduh bersinar.
+
+Matahari di dalam manusia bukan cahaya, melainkan kewajiban untuk terbakar.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "her", text: "but sometimes aku mikir. kalau kmu mengagumi seseorang tpi nnti kalau mengetahui sesuatu yg ternyata tidak sesuai ekspektasi dan penilaian mu apa yg bakal kmu lakukan? 😌 i mean aku sangat terharu dan seneng ofc di puji dan dinilai positif selalu sma org2 tpi as u know aku pun jg manusia yg punya banyak kekurangan" },
+      { sender: "me", text: "Sekurang kurangnya dirimu aku juga punya kekuranganku yang fatal, Dari mulut yang tajam, perilaku yang kurang mengenakan, dll.\n\n Jadi lebih enak Gini aja, kubalikin pertanyaanmu Menurutmu apakah aku bisa menerima kekuranganmu? Setelah memahami Dan mengenalku sebulan? Kaya faktor apa yang buatmu interested, buatmu nyaman, Dan secure di aku...\n\n Harusnya bisa menjawab pertanyaan ini... Kalo kamu suruh aku menjelaskan dengan senang hati kujawab ya ku bisa Terima kekuranganmu apa adanya mau itu mood swing mau itu kekurangan yang menurutmu fatal, dimataku semuanya adalah kelebihan... Karena itulah yang membentukmu juga sebagai Seorang Sela, kalau aku menyukai kelebihan Dan semua ttg dirimu ya kenapa ngak sama kekurangan mu menurutku kekurangan itu indah indah aja. Untuk ekspetasi, apa yang kuharapkan darimu itu lebih sederhana Dari yang kamu kira kok, ku cmn berekspetasi buat dirimu percaya percaya aja sama seorang Calvin ini... Selebihnya tidak ada karena apa yg kubutuhin Dari pasangan adalah trustnya Dan ketulusannya" }
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/3hRV0jL3vUpRrcy398teAU?si=df949e4e6c884441"
+  },
+  {
+    type: "note",
+    content: `#Note22 23/08/25
+#IM
+
+Sela,
+malam ini rasanya tenang, meski ku tahu kamu tadi sempat seru-seruan bareng teman DC. Aku sendiri memang niatan diem, karena sekadar ingin dengerin dari jauh, dan itu sudah cukup bikin aku merasa dekat. Ada sesuatu dari suaramu, dari caramu ketawa, yang bikin suasana jadi lebih hidup.
+
+Aku nggak butuh ikut terlibat langsung untuk bisa merasa senang, karena melihatmu bahagia aja udah jadi hal yang berarti. Kadang kita lupa, keindahan itu bukan datang dari hal besar, tapi dari hal kecil yang sederhana seperti tawa, sapaan, atau bahkan diam yang tetap terasa hangat.
+
+Jadi sebelum tidur, aku cuma mau bilang terima kasih, karena tanpa sadar kamu sudah bikin hari ini terasa lebih ringan. Semoga malam ini kamu bisa istirahat dengan nyenyak, biar besok pagi kamu bangun dengan energi baru.
+
+Goedenavond Sela. Dunia ini terasa lebih indah kalau ada kamu di dalamnya. 🌙✨`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Ok, if you see this then it's already morning, I'm overthinked a lil bit about today, SEMANGAT SELAA, yea I just can cheer up for u, I know I can't be there to protect you from the evil of the world, but I care for you. Yea maybe I must chill a bit 😂, let's take some little things back, pertama Kali bertemu mu banyak Hal yang g kumengerti kaya kenapa selalu dipertunjukan mimpi mimpi yang bahkan I don't know is it going to happen or not? Everything seems so real. Tapi seiring berjalannya waktu, tak terasa ya udah hampir 1 bulan, ketika 1 bulan sudah terlewat ku akan menantikan 2 bulan, setelah itu 3,4,5,6,7 Dan seterusnya. Ku Tau dirimu selalu berlindung Dari interaksi karena takut akan ekspetasi. Ku tidak akan memaksamu untuk keluar Kali ini, biarkanlah dirimu berlindung di bayang ku, ku tak peduli. Asalkan dirimu Masih berada di tempat seperti biasanya ku akan terus menemani sampai dirimu mulai melangkah maju. Melihat Dari depan? Belakang? Samping? Itu semua tetep bakal sama aja Tetaplah Sela. Meskipun Dunia ini mungkin tak terasa imbang untuk kita, at least kita sudah dewasa untuk menghadapinya. Bahkan saat menghadapimu mungkin dirimu berpikir, mengapa dirimu bisa seyakin Dan sepercaya itu dengan diriku yang bahkan aku selalu menutupi diriku agar selalu terlihat bagus didepanmu? Ku akan berbicara dengan tulus Dan jujur karena ku udah mendapatkan jawabannya hari ini, karena menurutku dirimu sangat layak, bahkan kelayakan itu melebihi diriku sendiri, setiap hari aku akan selalu berjuang untuk menyeimbangkan karena aku mau berdiri disamping bukan didepan atau dibelakang, jadi orang yang bisa kamu andalkan meskipun ku Tau aku sudah menunjukan beberapa kekurangan ku sendiri, aku bukanlah orang yang overconfidence, aku orang yang pemalu nyatanya... Bahkan untuk mengucapkan feelings atau pendapat terkadang aku gagap karena ketidakyakinan yang pasti. But yeah again I will try my best to be the right person even when it costs me everything, I will try it. I want to be the person you can rely on, because with your condition who else can? Piece by piece knowing you, studying you, how to act in front of you, is the most beautiful I ever experienced. I know it sounds pathetic, and too hypothetical. Tapi ya menemukanmu Dan merawatmu mungkin salah satu Dari alasan Allah mempertemukanmu. Susah? sangat susah bahkan diriku tidak paham lagi apa yang ku mau apa yang ku inginkan, ku tidak ingin meminta banyak, dan ku tidak mau mengekang, karena kau layak untuk hidup bebas layaknya Sela, maka Dari itu yang bisa kulakukan hanyalah mengambil energy negative mu Dan merubahnya menjadi positive, menjadi tempat curhat mu, deeptalk mu, menjadi orang yang mendewasakanmu, menjadi teman maupun apapun itu untuk menambah experience mu, mungkin menjalarkan tangan tidak akan cukup untuk menyembuhkan mu Dari jahatnya dunia, maka Dari itu Dari sekarang mungkin aku akan effort lebih, Dan aku akan sangat senang jika kau menerima itu., Jadi tolong meskipun sudah tidak memiliki alasan lagi untuk hidup setidaknya hiduplah untuk orang egois ini. Aku selalu disini, ku tidak akan berbohong, kau bisa ambil lidah atau mataku kalau aku berbohong, supaya aku tidak melihat Dan memandang orang lain selain dirimu. Terima kasih sudah mau mengenalku... Ni lah diriku klo udh overthinking merasa diriku belum cukup, ketulusan hati ni ku berikan padamu, gunakan sebisamu, manfaatkan sebaik baiknya karena tak Tau juga kapan lagi orang seperti diriku akan ada lagi, Dan itu berlaku sebaliknya, aku sangat menghargai mu Dan mengagumi mu, yang berakhir akan menjaga agar komunikasi ini tetap berjalan Dan selalu terjalani dengan baik Dan damai. Good morning, semangat urusan negaranya meng ku!! Nanti klo udh pulang kumanjain ni wkwkwk gud luck yah be the girl I know, the strong one, the beautiful one, and the kindest one." },
+      { sender: "her", text: "sore vin, sorry baru bales.. tdi pagi cmn kubuka krna buru2 berangkat.. and pas dijalan kubaca and ku pahami dalam2 😌 alright i see. kmu emng laki2 yg emosional and ekspresif sekali yah.. but thank you ya udah mau menjelaskan isi hati or pikiranmu sepanjang ini, respect sama kejujuran dn keberanian kmu.. i really appreciated that 🙏🏻 aku belum pernah dpt long text yg kesannya mengistimewakan atau seserius ini sih. ya cara org terbilang beda2 memang. and kmu berhasil buat selalu jdi tempat positif dri hal2 negatif selama ini.. makasih ya karena selalu memberi semangat, rasa dihargai juga nyaman ke orang lain 🙏🏻 aku pun bkl selalu menghargai dan menerima apapun respon dan penilaian itu kok. apalagi pas mengetahui kalau aku jdi cewek pertama yg kmu ajak bicara sejauh ini(?) so yeah.. aku bkl menghargai kehadiranmu selalu kok 🙂‍↕️ asal disini kita bisa menghargai sesama, tau batasan dn gak menimbulkan salah paham ke hal lain its enough. jdi ga perlu khawatir... ditambah perjalanan mu masih panjang kok vin.. kmu jgn lupa ke hal lain meski skrng mungkin kmu lagi merasa senang kenal aku. jalanin aja seperti biasanya ga perlu khawatirin ini itu, kamu pun juga deserve and worth it atas apapun itu. aku ga bkl punya hubungan status sama siapapun sampai aku bener2 udh siap juga.. jadi semoga kmu bisa anggap aku sewajarnya aja.. banyak hal yg jg sedang ku kejar untuk bisa jadi wanita yg lebih dewasa, kuat dan positif dalam menghadapi kehidupan yg berat ini:’ so.. lets grow together to become better person and a good future vin ✨💪🏻 jaga kesehatan dn semangat selalu juga buat kamu yaa, disini aku juga bkl mengusahakan untuk selalu ada kalau kmu butuh tempat cerita atau diskusi apapun itu." }
+    ]
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/2afCBiru10AFckfOa49wIa?si=d9bb46864b424218"
+  },
+  {
+    type: "note",
+    content: `#Notes94 30/08/25
+#LD
+
+Hey, how you doing Sela?
+Kadang kita nggak sadar kalau hari-hari yang kita jalanin itu sebenarnya banyak banget hal kecil yang patut disyukuri. Entah dari senyum orang lain, momen sepele yang bikin ketawa, atau bahkan sekedar bisa istirahat dengan tenang. Semua itu berharga banget.
+
+Kalau lagi capek, inget aja: kamu udah keren banget bisa sampai di titik ini. Nggak semua orang bisa sekuat kamu. Ada kalanya jalan terasa berat, tapi percaya deh, setiap langkah yang kamu ambil itu pasti ada maknanya.
+
+Semoga kamu terus dikuatin, dimudahkan dalam hal apapun yang kamu perjuangkan, dan tetap nemu alasan buat senyum tiap hari. Jangan lupa, ada banyak orang yang diam-diam bangga sama kamu.
+
+Istirahat yang cukup ya, biar besok bisa bangun dengan energi baru.`
+  },
+  {
+    type: "chat",
+    content: [
+  { 
+    sender: "me", 
+    text: `Suka suka Sela
+Ini chat tadi malam wkwk
+
+Benefit bersamaku:
+1. Bisa curhat
+2. Ga perlu bisa masak, tiap hari kumasakin makanan barat
+3. Deeptalk tiap hari
+4. Hidup suka suka, tak perlu ijin
+5. Keliling dunia
+6. Login Islam
+7. Tiap hari keliling rumah (tidur, makan, jalan komplek)
+8. Kaya sekarang: tiap hari komunikasi dan play Spotify
+9. Cepet kaya, rumah setingkat tapi luas (diusahakan wkwk)
+10. Liat semua list yang kamu mau: keindahan dunia dll
+11. Dimanja tiap hari
+12. Dikasih pujian
+13. Dikasih notes-notes 
+14. Bisa recharge energi positif
+15. Masih banyak hal yang ga bisa dijelasin, tapi semua akan diusahakan demi dirimu.
+
+Lov u as always, today and tomorrow.  
+—V
+
+Aku biasa aja.  
+Aku ga ganteng, aku ga sempurna.  
+
+Tapi kalau suatu hari manusia cantik ini menemaniku,  
+aku akan sangat, sangat, sangat, amat bersyukur.
+
+--------------------------
+
+Terang dalam bulan,  
+manusia di bawah terangnya.  
+
+Dalam matahari selalu terdapat makna  
+akan hari esok.  
+
+Dalam bulan ada makna untuk keindahan suatu makhluk.  
+
+The moon is beautiful, isn’t it?  
+The sun is rising up in the sky so high that I never reach.  
+Even the stars are shining so bright.  
+
+Artinya apa bang Messi? 😅
+
+---
+
+Terang dalam bulan,  
+manusia di bawah terangnya.  
+
+Manusia selalu memiliki sisi yang bisa menyinari hal-hal di sekitarnya,  
+seperti Sela yang selalu menyinari diriku yang gelap ini (hitam hitam hitam, ehem).  
+
+Dalam matahari selalu terdapat makna akan hari esok.  
+
+Meskipun berpisah dan menjalani keseharian masing-masing,  
+dalam matahariku aku selalu percaya apapun yang kau lakukan di hari ini dan hari-hari berikutnya,  
+meskipun terkadang aku tahu ga semuanya baik,  
+tapi yang bisa kulakukan adalah mendukungmu dari jauh maupun dekat.  
+
+Dalam bulan ada makna untuk keindahan suatu makhluk.  
+
+Bulan selalu baik ke orang-orang,  
+karena bulan selalu melihat setelah matahari tidak melihat.  
+Artinya setiap langkahmu itu ada maknanya.  
+Mau itu negatif sekali pun, selalu ada pengalaman yang bisa didapat  
+dan ilmu yang bisa diterapkan ke depan, yang akan membentukmu di masa depan.  
+
+The moon is beautiful, isn’t it?  
+Lov u, te he 💙  
+
+The sun is rising up in the sky so high that I never reach,  
+meskipun dirimu terus melangkah, aku akan berusaha untuk mengikuti.  
+
+Even the stars are shining bright,  
+ketika dirimu mulai redup aku akan berusaha untuk menyinari jalanmu.  
+
+Itu lah wkwkwk.  
+
+---
+
+Ok, nice.  
+Jangan menyerah ya.  
+Meskipun dunia jahat, masih ada manusia-manusia yang peduli padamu.  
+
+Cape? Cerita.  
+Feeling lonely? Req aja, mau dimanja Bang Messi.  
+Kurang perhatian? Sini, kutemani 24 jam.  
+
+Good luck for today! 🌸`
+  },
+      { sender: "her", text: "makasih buat daftar benefit bersama nya 😌 seperti benefit kerja di lamaran kerja sajah wkwk but got it 😌 dirimu juga good luck for today, semangat menjalani aktivitas nya.. semoga tidurmu nyenyak dn cukup buat hari ini. and i’ll send you my photo as u wished karna udh dance tadi" }
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/2SyLEZFDH9pHAF4GpfVRJS?si=589ebda6a3b2441a"
+  },
+  {
+    type: "note",
+    content: `#Note44 27/08/25
+#W! ⚠
+
+Sela, ada sesuatu dari dirimu yang selalu meninggalkan jejak hangat di hati. Senyummu bukan hanya cantik, tapi juga seperti bahasa yang tidak pernah salah dimengerti membuat suasana menjadi lebih tenang, lebih hidup, dan lebih berarti.
+
+Aku sering merasa aneh, bahkan di dalam mimpi pun, bayanganmu hadir seolah dunia ingin mengingatkanku tentang indahnya keberadaanmu. Di sana, kamu tetap sama, sederhana, hangat, dan membuatku ingin terus percaya bahwa kebaikan itu nyata.
+
+Apa pun yang kamu lakukan, sekecil apa pun langkahmu, aku selalu ingin mendukungmu. Tidak hanya karena aku kagum, tapi karena aku percaya bahwa setiap hal yang keluar dari hatimu selalu membawa kebaikan. Dan di mimpi itu, aku hanya bisa tersenyum karena ternyata, bahkan tanpa kusadari, kamu sudah jadi bagian dari hal-hal yang membuatku ingin terus berjalan dengan semangat.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Semangat malam, tidur nyenyak sel, love you as always tomorrow and now. Ku bakal menunggu mu ready sampai kiamat, Dan menunggu kamu cukup dewasa Dan siap untuk membuka hatimu sendiri, karena emg beneran ku merasa you're the first and last. Ku kalau suruh se effort ini lagi ke orang aku memilih buat hidup sendiri aja sih karena ya mungkin dimasa depan ku juga udh ga punya waktu sebanyak ini dihabiskan untuk orang spesial, jadi nikmatin aja hari ini Dan seterusnya, aku bakal mencoba mencari Hal Hal yang bisa kita bahas Dan inget improve 1% tiap harinya itu better daripada tidak melakukan apapun, jadi ya emg kayanya besok ku tanyain sih wkwkwk jadi hari ini apa yang kamu pelajari Dari manusia? Begitu kurang lebih dariku hari ini, meskipun kamu menganggapku sebagai orang yang layak di interest atau gimana, bagiku kamu tetep sama aja dimataku. Mau seberubah apapun yauda kamu kamu, jangan terlalu terpaku kata orang, jadi diri sendiri, I am always right here to wait for you. Take your time." },
+      { sender: "her", text: "siap semangat malam 😌 hmm i see.. memang aku blm cukup dewasa yah makanya blm bisa menerima org secepat itu 😌 and yah mungkin saat ini kmu berfikir bgitu but tak tahu kedepannya.. saranku lakuin hal yg membangun semangat dirimu dan kemajuan hidupmu saja. niatkan jg segala sesuatu nya dgn baik. and yass thank u buat ilmu baru soal improve 1% nya.. hari ini yg ku pelajari dari manusia beragam. when ku melihat manusia yg udh punya segalanya jadi terkesan sombong atau lupa daratan lah. and then ada juga manusia yang seperduli itu dgn tulus tanpa pamrih. its amazing sangat… alright! thank you vinn 🙂‍↕️ kamu juga ya.. tdk perlu merubah apapun dri dirimu hanya agar org lain menerima mu atau gmana. ya kalau berubahnya emng dlm hal baik intropeksi tak masalah tpi kalau terlalu berlebihan ke diri sendiri nya sampai bikin kmu capek kurang2 in. semangat selalu vin, disini aku jg akan mendukung dan mendoakan mu😌" }
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/5DqdesEfbRyOlSS3Tf6c29?si=cfbc8b2b089b4bfd"
+  },
+  {
+    type: "note",
+    content: `#Note122 05/09/25
+#ND
+
+Sela,
+kadang kita butuh berhenti sejenak, bukan karena lemah, tapi karena hati juga perlu bernapas.
+Sama seperti langit yang tak selalu biru, hidupmu pun wajar punya mendungnya.
+Tapi percayalah, badai tak pernah datang tanpa ujung, selalu ada cahaya menunggu.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "her", text: "interesting.. nah ini bedanya kamu sama orang yg dulu aku kenal 11 12 sama kmu. sebaliknya dia tau aku streamer tapi kurang ngehargain sih. malah jdi benci and ga suka aku dapet dukungan positif dari orang selain dia. makanya kadang aku ngerasa rendah diri kaya apakah aku tidak selayak itu dapet support dari orang2 sampai orang yg ku anggap special milih pergi? jdi meski begitu aku justru jadi paham and bisa liat2 lagi sih sama orang yg mana yg harus ku jauhi sama yg ku pertahanin. makasih kamu udh ngasih tau pandangan lain kalau ternyata masih ada org yg bisa paham sama hobi org kaya aku yg suka streaming ini. tapi saranku kamu lebih baik cari cewek yg bukan streamer sih.. karna pasti bakal banyak dramanya, dan mungkin kamu bakal capek 🙇🏻‍♀ and bagus tuhh kalau kamu bisa bijak ga cemburuan sama apapun itu ✨" },
+      { sender: "me", text: "Drama? Makanan tiap hari :' , udh biasa lagian emg pernah capek? Drama ga ada apa apanya daripada kerjaan ku tiap hari, kau Tau kenapa aku bisa hidup sebatang Kara sampai sekarang? Karena aku udh ngerasain hampir semua jenis komunikatif sama orang, jadi don't judge my type wkwkwk, stream cmn kerjaan, manusia pasti berdrama semua klo g ada drama g mungkin bisa deket jg, g ada hubungannya sifat org sama kerjaan.\n\n Streamer ya streamer anggep itu tittle mu, Sela ya Sela ga ada hubungannya sama streamer, itu dianya yg Masih belum dewasa menghadapimu, kalau kau samain ama aku jelas salah, bagiku kerjaan penting, sifat orang itu beda cerita, aku disini selalu diajarin untuk selalu professional Dalam bekerja terlepas sifatnya gmn pun itu. Jadi buatku, kamu tetap Sela yang aku kenal. Kali ini Bukan sebagai ‘seorang streamer’. Semoga jawaban ini bisa buat kau lebih tenang" }
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/1De425SCFJULIHbcmeebUw?si=a1b5ccbb000140c7"
+  },
+  {
+    type: "note",
+    content: `#Note123 06/09/25
+#IM
+
+Malam ini sederhana, tapi hatiku penuh.
+Cukup dengan tahu kamu baik-baik saja, rasanya dunia ikut tenang.
+Ada ketulusan dalam caramu menjalani hari, yang membuat aku percaya:
+kebaikan tidak perlu keras suara, cukup nyata dalam tindakan.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Goedemorgen sela, may your day have a beautiful journey today, semangat terusss" },
+      { sender: "her", text: "pagi juga, Aamin.. have a nice day juga vin, semangat menjalani harinya" }
+    ]
+  },
+  
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/32TZ5lDxUz2lBND3qcQxUr?si=c4a58d5597194f40"
+  },
+  {
+    type: "note",
+    content: `#Note124 07/09/25
+#LD
+
+Hey Sela,
+kamu udah melangkah sejauh ini, meski kadang nggak sadar betapa kerennya dirimu.
+Ingat, nggak semua orang mampu berdiri seteguh itu.
+Jadi kalau hari ini terasa berat, jangan lupa kamu berhak untuk bangga sama diri sendiri.`
+  },
+  {
+    type: "chat",
+    content: [
+  { 
+    sender: "me", 
+    text: `#Note1 24/08/25
+#PD
+
+Sela,  
+Aku masih ingat jelas pertama kali ketemu kamu di live. Waktu itu aku nggak nyangka satu interaksi singkat bisa bikin rasa penasaran yang panjang. Ada sesuatu dari caramu ngobrol, caramu bercanda, yang bikin suasana terasa beda.  
+
+Setelah itu lanjut ke chat—awalnya sederhana, nggak ada maksud apa-apa, hanya sekadar menyapa. Tapi dari percakapan kecil itu aku tahu, kamu bukan orang biasa. Ada kehangatan, ada cara kamu memberi respon yang bikin aku ngerasa dihargai.  
+
+Mungkin buatmu itu hal biasa, tapi buatku, itu awal yang bikin aku terus ingin mengenal lebih jauh. Sejak momen pertama itu, aku sadar ada keindahan dalam pertemuan yang tak direncanakan. Dan aku bersyukur, pertemuan itu adalah denganmu.  
+
+Goedenavond, from my past V to you in the future.` 
+  },
+      { sender: "her", text: "thank you so much vin untuk waktu, support dan pesan menyentuhnya 🙇🏻‍♀ doa terbaik selalu buat kamu.. makasih udh mau saling kenal, aku juga seneng and bersyukur bisa ketemu seseorang seperti calvin 🙂‍ semangat kuliah hari ini.. semoga lancar dan semoga bantukmu cepet sembuh!" },
+      {sender: "me", text: "Semangat juga kamu Dalam beraktivitas, amin semoga ku bisa cepat sembuh Dan kembali menemani mu Dalam Dunia perdeeptalk an itu wkwk"}
+    ]
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/2teUP63779UkKXtSMsveAi?si=ecd91df8342b4343"
+  },
+  {
+    type: "note",
+    content: `#Note125 08/09/25
+#W!
+
+Senyummu itu, Sela, seperti cahaya lampu jalan di malam sepi.
+Kecil, sederhana, tapi cukup untuk membuat orang lain merasa aman berjalan.
+Aku rasa, dunia ini sedikit lebih hangat setiap kali kamu tersenyum.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Hari ini tanpa terasa lagi, waktu yang kita habiskan berlalu sangat cepat, Terima kasih sudah mau menemaniku, dirimu stop bilang tak layak, dirimu lebih layak dibanding diriku, ku selalu jaga ni perasaan bukan tanpa alasan, tapi demi kenyamananmu, ku juga mau kasih kebahagiaan meskipun ga akan bisa setiap hari, but if you feel sad I will make u happy with my jokes, if you feel happy then me too. Goedemorgen manusia terfavorit.\n\n" },
+      { sender: "her", text: "iyaa terima kasih lagi sudah meluangkan waktu untuk mengobrol bersama vin 🙂‍↕ you always make my day kok vin.. Dank je wel ya! ✨ ku juga selalu berharap dirimu bisa selalu semangat dn bahagia.. istirahat yg cukup woof woof semoga lekas sembuh tenggorokan nya dan lancar selalu kegiatannya^^ Goedemorgen manusia terunik\n" }
+    ]
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/0FTmksd2dxiE5e3rWyJXs6?si=ab58a4202da64dc1"
+  },
+    {
+    type: "note",
+    content: `#Note126 09/09/25
+#PD
+
+Sela,
+perjalanan ini panjang, tapi setiap langkahmu punya arti.
+Jangan takut salah, karena setiap goresan pun tetap bagian dari lukisan besar hidupmu.
+Aku percaya, semua yang kamu jalani akan membentukmu jadi versi paling indah dari dirimu sendiri.`
+  },
+  {
+    type: "chat",
+    content: [
+      { sender: "me", text: "Istirahat yang cukup yang banyak, gausah khawatir ttg gw ngilang apa gimana, ga kemana mana kok... Ku g akan bosen Dan lelah buat bicara begini tiap hari karena you deserve it, Gw selalu khawatirin dirimu, jadi jangan khawatir didunia ini Masih ada yang peduli sama dirimu koq, jadi mending percaya aja karena mungkin itu juga yang terbaik.\n\n"},
+      { sender: "her", text: "wkwk iyaa istirahat yg cukup juga vin! hari ini kalau banyak org yg bikin kamu kurang semangat ya anggap lah seperti angin lalu, kadang langit juga bisa mendung dn cerah kan.. jdi tiap hari jadikan pembelajaran untuk kedepannya aja 😌 fokus ke hal2 yg kamu sukai aja kaya yeay hari ini bisa makan nasi kebuli, or yeay denger musik di kamar dengan nyaman dsg. jdi tak perlu difikirin hal2 yg mungkin bikin kmu kecewa itu, dri keberadaan mu ada orang yg jg happy dan bersyukur lho contohnya diriku 🙂‍↕ jdi semangat terus yaa 🙌🏻 istirahat yg cukup dan jaga kesehatan selalu ya" }
+    ]
+  },
+  {
+    type: "song",
+    content: "https://open.spotify.com/embed/track/3FUaNR2HD1XaeOmw4puhkz?si=1ec9dae4df91462a"
+  }
+];
+    let index = 0;
+    const cardText = document.getElementById("cardText");
+
+    function updateCardText() {
+      const item = contents[index];
+      if(item.type === "note") {
+        cardText.innerHTML = item.content.replace(/\n/g, "<br>");
+      } else if(item.type === "chat") {
+        let html = '';
+      item.content.forEach(c => {
+          const textWithBreaks = c.text.replace(/\n/g, "<br>");
+          // Format timestamp (HH:MM format)
+          const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+          
+          if (c.sender === "me") {
+            html += `
+              <div class="chat-row chat-me">
+                <div class="chat-name">V</div>
+                <div class="chat-bubble">${textWithBreaks}</div>
+              </div>`;
+          } else {
+            html += `
+              <div class="chat-row chat-her">
+                <div class="chat-name">Sela</div>
+                <div class="chat-bubble">${textWithBreaks}</div>
+              </div>`;
+          }
+        });
+
+
+        cardText.innerHTML = html;
+      } else if(item.type === "song") {
+        cardText.innerHTML = `
+          <div class="spotify-box">
+            <iframe 
+                src="${item.content}" 
+                width="100%" 
+                height="80" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                title="Spotify Player">
+            </iframe>
+          </div>
+        `;
+      }
+
+
+    }
+
+    function nextCard() {
+      index = (index + 1) % contents.length;
+      updateCardText();
+    }
+
+    function prevCard() {
+      index = (index - 1 + contents.length) % contents.length;
+      updateCardText();
+    }
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "ArrowRight") nextCard();
+      if(e.key === "ArrowLeft") prevCard();
+    });
+
+    // Swipe gesture
+    let startX = 0;
+    document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+    document.addEventListener("touchend", e => {
+      let endX = e.changedTouches[0].clientX;
+      if(startX - endX > 50) nextCard();
+      if(endX - startX > 50) prevCard();
+    });
+
+    updateCardText();
+  </script>
+</body>
+</html>
