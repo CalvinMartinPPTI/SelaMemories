@@ -9,16 +9,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
   <title>Kartu Digital</title>
   <style>
-    * {
-      font-family: "Roboto", sans-serif !important;
-    }
-
     :root {
       --card-width: 90vmin;
       --card-max-width: 560px;
       --card-ratio: 7/4;
       --card-border-radius: 16px;
-      --card-bg: linear-gradient(135deg, #9deaff, #e2fff3); /* gradient card */
+      --card-bg: linear-gradient(135deg, #9deaff, #e2fff3); 
       --primary-color: #98f7c3;
       --primary-color-hover: #e2fff3;
       --text-color: #333;
@@ -39,6 +35,18 @@
       color: var(--text-color);
       overflow: hidden;
     }
+
+    .title-box {
+      font-family: "Birthstone", sans-serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      background: linear-gradient(135deg, #9deaff, #98f7c3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
 
     .card-container {
       position: relative;
@@ -87,93 +95,84 @@
       border-radius: 10px;
     }
 
-    /* Container utama chat */
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-}
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+    }
 
-/* Setiap baris chat */
-.chat-row {
-  display: flex;
-  flex-direction: column;
-  max-width: 75%;
-}
+    .chat-row {
+      display: flex;
+      flex-direction: column;
+      max-width: 75%;
+    }
 
-.chat-row.chat-me {
-  justify-content: flex-end;
-  justify-content: right;  
-}
+    .chat-row.chat-me {
+      justify-content: flex-end;
+      justify-content: right;  
+    }
 
-.chat-row.chat-her {
-  justify-content: flex-start;
-}
+    .chat-row.chat-her {
+      justify-content: flex-start;
+    }
 
-/* Bubble dasar */
-.chat-bubble {
-  padding: 8px 12px;
-  border-radius: 16px;
-  word-wrap: break-word;
-  text-align: justify;
-  font-size: 0.95rem;
-}
+    .chat-bubble {
+      padding: 8px 12px;
+      border-radius: 16px;
+      word-wrap: break-word;
+      text-align: justify;
+      font-size: 0.95rem;
+    }
 
-/* Nama pengirim */
-.chat-name {
-  font-size: 1rem;
-  font-weight: bold;
-  margin: 4px;
-}
+    .chat-name {
+      font-size: 1rem;
+      font-weight: bold;
+      margin: 4px;
+    }
 
-.chat-me .chat-name {
-  color: green;
-}
+    .chat-me .chat-name {
+      color: green;
+    }
 
-.chat-her .chat-name{
-  color: maroon;
-}
+    .chat-her .chat-name{
+      color: maroon;
+    }
 
-/* Buble "me" (kanan) */
-.chat-me {
-  align-self: flex-end;          /* Geser ke kanan */
-  background: #d1f7d6;
-  border-radius: 16px 16px 0 16px;
-  text-align: left;              /* isi tetap rata kiri biar rapi */
-}
+    .chat-me {
+      align-self: flex-end;         
+      background: #d1f7d6;
+      border-radius: 16px 16px 0 16px;
+      text-align: left;             
+    }
 
-.chat-me .chat-name {
-  text-align: right;  
-  float: right;     
-  padding-right: 3%;
-  padding-top: 2%;            /* Nama ke kanan */
-}
+    .chat-me .chat-name {
+      text-align: right;  
+      float: right;     
+      padding-right: 3%;
+      padding-top: 2%;          
+    }
 
-/* Buble "her" (kiri) */
-.chat-her {
-  align-self: flex-start;        /* Geser ke kiri */
-  background: #f3abbb;
-  border-radius: 16px 16px 16px 0;
-  text-align: left;
-}
+    .chat-her {
+      align-self: flex-start;        
+      background: #f3abbb;
+      border-radius: 16px 16px 16px 0;
+      text-align: left;
+    }
 
-.chat-her .chat-name {
-  text-align: left;
-  float: left;     
-  padding-left: 3%;
-  padding-top: 2%;              /* Nama ke kiri */
-}
+    .chat-her .chat-name {
+      text-align: left;
+      float: left;     
+      padding-left: 3%;
+      padding-top: 2%;            
+    }
 
-.spotify-box {
-  border-radius: 0;  /* jadi kotak */
-  overflow: hidden;  /* sembunyiin sudut rounded bawaan */
-  width: 100%;
-  height: 100px;
-}
-
-
-
+    .spotify-box {
+      border-radius: 0; 
+      overflow: hidden; 
+      width: 100%;
+      height: 100px;
+    }
 
     .controls {
       margin-top: 20px;
@@ -208,8 +207,8 @@
     }
 
     .note-card {
-      min-height: 70vh; /* 70% tinggi layar */
-      max-height: 90vh; /* biar nggak kepanjangan */
+      min-height: 70vh; 
+      max-height: 90vh; 
       overflow-y: auto;
       padding-top: 2rem;
       padding-bottom: 2rem;
@@ -225,6 +224,8 @@
   </style>
 </head>
 <body>
+  <div class="title-box">Our Recap Memories</div>
+
   <div class="card-container">
     <div class="card">
       <div class="card-text" id="cardText"></div>
@@ -745,7 +746,6 @@ Aku percaya, semua yang kamu jalani akan membentukmu jadi versi paling indah dar
         let html = '';
       item.content.forEach(c => {
           const textWithBreaks = c.text.replace(/\n/g, "<br>");
-          // Format timestamp (HH:MM format)
           const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
           
           if (c.sender === "me") {
@@ -779,8 +779,6 @@ Aku percaya, semua yang kamu jalani akan membentukmu jadi versi paling indah dar
           </div>
         `;
       }
-
-
     }
 
     function nextCard() {
@@ -793,13 +791,11 @@ Aku percaya, semua yang kamu jalani akan membentukmu jadi versi paling indah dar
       updateCardText();
     }
 
-    // Keyboard navigation
     document.addEventListener("keydown", (e) => {
       if(e.key === "ArrowRight") nextCard();
       if(e.key === "ArrowLeft") prevCard();
     });
 
-    // Swipe gesture
     let startX = 0;
     document.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     document.addEventListener("touchend", e => {
